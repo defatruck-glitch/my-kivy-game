@@ -1,26 +1,51 @@
+
 name: Build Kivy APK
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
-      - name: 取得程式碼
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: 使用 Buildozer 編譯 APK
-        uses: ArtemSBulgakov/buildozer-action@v1
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
-          command: buildozer android debug
-          buildozer_version: stable
+          distribution: temurin
+          java-version: '17'
 
-      - name: 上傳編譯完成的 APK
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git zip unzip autoconf automake libtool \
+            pkg-config cmake build-essential \
+            libffi-dev libssl-dev \
+            libltdl-dev zlib1g-dev
+          python -m pip install --upgrade pip
+          python -m pip install \
+            "buildozer==1.5.0" \
+            "cython==0.29.34"
+
+      - name: Build APK
+        run: |
+          buildozer -v android debug
+
+      - name: Upload APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: package
+          name: my-android-apk
           path: bin/*.apk
+          if-no-files-found: error
