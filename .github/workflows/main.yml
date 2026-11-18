@@ -38,9 +38,13 @@ jobs:
             "buildozer==1.5.0" \
             "cython==0.29.34"
 
+      
       - name: Build APK
         run: |
-          buildozer -v android debug
+          mkdir -p ~/.android
+          touch ~/.android/repositories.cfg
+          (while true; do echo y; sleep 1; done) | buildozer -v android debug
+
 
       - name: Upload APK
         if: success()
