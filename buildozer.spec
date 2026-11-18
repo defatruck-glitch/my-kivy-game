@@ -57,7 +57,9 @@ requirements = python3==3.11.9,hostpython3==3.11.9,kivy==2.3.0
 
 # (list) Supported orientations
 # Valid options are: landscape, portrait, portrait-reverse, landscape-reverse, or all
-orientation = portrait
+# orientation = portrait
+orientation = landscape
+
 
 # (list) List of services to declare
 # This is currently only relevant to Android services.
